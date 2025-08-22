@@ -55,7 +55,21 @@
     {{-- 9 --}}
     <input type="text" id="textInput2">
     <button onclick="alertInputValue()">Alert Input Value</button>
+    <hr>
+    {{-- 10 --}}
+    <input type="checkbox" id="select-all" onclick="selectAllCheckboxes()">Select all</input><br>
+    <input type="checkbox" class="checkbox">CheckBox1</input><br>
+    <input type="checkbox" class="checkbox">CheckBox2</input><br>
+    <input type="checkbox" class="checkbox">CheckBox3</input><br>
+    <hr>
+    {{-- 11 --}}
 
+    {{-- 12 --}}
+    <label for="stopwatch">Stop Watch</label><br>
+    <label for="stopwatch-count">00.00</label><br>
+    <button onclick="startStopWatch()">Start</button>
+    <button onclick="stopStopWatch()">Stop</button>
+    <button onclick="resetStopWatch()">Reset</button>
     <script>
         // 1
         function changeBackground() {
@@ -121,6 +135,37 @@
             } else {
                 alert('Please enter something');
             }
+        }
+
+        //10
+        function selectAllCheckboxes() {
+            let selectAll = document.getElementById("select-all");
+            let checkboxes = document.getElementsByClassName("checkbox");
+            for (let checkbox of checkboxes) {
+                checkbox.checked = selectAll.checked;
+            }
+        }
+
+        // 11
+
+        // 12
+        function startStopWatch() {
+            let stopWatchCount = document.querySelector('label[for="stopwatch-count"]');
+            let startTime = Date.now();
+            let interval = setInterval(() => {
+                let elapsedTime = Date.now() - startTime;
+                stopWatchCount.textContent = (elapsedTime / 1000).toFixed(2);
+            }, 100);
+        }
+
+        function stopStopWatch() {
+            clearInterval(interval);
+        }
+
+        function resetStopWatch() {
+            let stopWatchCount = document.querySelector('label[for="stopwatch-count"]');
+            stopWatchCount.textContent = "00.00";
+            clearInterval(interval);
         }
     </script>
 </body>

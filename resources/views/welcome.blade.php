@@ -70,6 +70,20 @@
     <button onclick="startStopWatch()">Start</button>
     <button onclick="stopStopWatch()">Stop</button>
     <button onclick="resetStopWatch()">Reset</button>
+    <hr>
+
+    {{-- 13 --}}
+    <label for="reverse-timer">Reverse Timer</label><br>
+    <label for="reverse-timer-count">59.00</label><br>
+    <button onclick="startReverseTimer()">Start</button>
+    <button onclick="stopReverseTimer()">Stop</button>
+    <button onclick="resetReverseTimer()">Reset</button>
+
+    {{-- 14 --}}
+    {{-- Take a description box and below that show the word count in red color. When the word count turns 100 make it green color. Like (15 words) and at 100 and greater (100 words) --}}
+    <textarea id="description" oninput="updateWordCount()"></textarea>
+    <p id="word-count" style="color: red;">0 words</p>
+
     <script>
         // 1
         function changeBackground() {
@@ -149,23 +163,72 @@
         // 11
 
         // 12
+        let interval = null;
+        let startTime = 0;
+        let elapsed = 0;
+
         function startStopWatch() {
-            let stopWatchCount = document.querySelector('label[for="stopwatch-count"]');
-            let startTime = Date.now();
-            let interval = setInterval(() => {
-                let elapsedTime = Date.now() - startTime;
-                stopWatchCount.textContent = (elapsedTime / 1000).toFixed(2);
+            if (interval) return; // prevent multiple intervals
+            startTime = Date.now() - elapsed;
+            interval = setInterval(() => {
+                elapsed = Date.now() - startTime;
+                document.querySelector('label[for="stopwatch-count"]').textContent = (elapsed / 1000).toFixed(2);
             }, 100);
         }
 
         function stopStopWatch() {
             clearInterval(interval);
+            interval = null;
         }
 
         function resetStopWatch() {
-            let stopWatchCount = document.querySelector('label[for="stopwatch-count"]');
-            stopWatchCount.textContent = "00.00";
             clearInterval(interval);
+            interval = null;
+            elapsed = 0;
+            document.querySelector('label[for="stopwatch-count"]').textContent = "00.00";
+        }
+
+        // 13
+        let reverseInterval = null;
+        let reverseStartTime = 0;
+        let reverseRemaining = 59000;
+
+        function startReverseTimer() {
+            if (reverseInterval) return;
+            reverseEndTime = Date.now() + reverseRemaining;
+            reverseInterval = setInterval(() => {
+                reverseRemaining = reverseEndTime - Date.now();
+                if (reverseRemaining <= 0) {
+                    reverseRemaining = 0;
+                    clearInterval(reverseInterval);
+                    reverseInterval = null;
+                }
+                document.querySelector('label[for="reverse-timer-count"]').textContent =
+                    (reverseRemaining / 1000).toFixed(2);
+            }, 100);
+        }
+
+        function stopReverseTimer() {
+            clearInterval(reverseInterval);
+            reverseInterval = null;
+        }
+
+        function resetReverseTimer() {
+            clearInterval(reverseInterval);
+            reverseInterval = null;
+            reverseRemaining = 59000;
+            document.querySelector('label[for="reverse-timer-count"]').textContent = "59.00";
+        }
+
+        // 14
+        function updateWordCount() {
+            let text = document.getElementById("description").value;
+            let wordCount = text.split(/\s+/).filter(function(word) {
+                return word.length > 0;
+            }).length;
+            let wordCountDisplay = document.getElementById("word-count");
+            wordCountDisplay.textContent = wordCount + " words";
+            wordCountDisplay.style.color = wordCount >= 100 ? "green" : "red";
         }
     </script>
 </body>
